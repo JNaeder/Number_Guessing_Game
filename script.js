@@ -7,29 +7,33 @@ enterGuessButton = document.getElementById("enter_guess");
 resetBtn = document.getElementById("reset_btn");
 
 // Variables
-lives = 10;
+lives = 0;
+startingLives = 10;
 indicatorText.innerHTML = "";
 hiddenNumber = 0;
 
 // Functions
-function createRandomeNumber(){
+function createRandomNumber(){
     hiddenNumber = Math.trunc(Math.random() * 100);
 }
-function resetValues(){
+function resetInputValue(){
     guessedNumber.value = "";
 }
 function makeAGuess(guess){
-    if(guess > hiddenNumber){
-        indicatorText.innerHTML = "Too High!";
+    if (lives > 0){
         removeLife();
-    } else if(guess < hiddenNumber){
-        indicatorText.innerHTML = "Too Low!";
-        removeLife();
-    } else{
-        indicatorText.innerHTML = "You Win!";
-        showHiddenNUmber();
+        if(guess > hiddenNumber){
+            indicatorText.innerHTML = "Too High!";
+        } else if(guess < hiddenNumber){
+            indicatorText.innerHTML = "Too Low!";
+        } else{
+            indicatorText.innerHTML = "You Win!";
+            let tries = startingLives - lives;
+            indicatorText.innerHTML = `You guessed the correct answer in ${tries} ${tries > 1 ? 'tries' : 'try' }!`;
+            showHiddenNUmber();
+        }
     }
-    resetValues();
+    resetInputValue();
 }
 function showHiddenNUmber(){
     hiddenNumberText.innerHTML = hiddenNumber;
@@ -37,15 +41,19 @@ function showHiddenNUmber(){
 function removeLife(){
     lives--;
     livesLeftText.innerHTML = `${lives} Guesses Left`;
+    if(lives <= 0){
+        showHiddenNUmber();
+        indicatorText.innerHTML = "You Lose!";
+    }
 }
-
 function startGame(){
-    lives = 10;
+    lives = startingLives;
     livesLeftText.innerHTML = `${lives} Guesses Left`
     hiddenNumberText.innerHTML = "???";
     indicatorText.innerHTML = "";
-    resetValues();
-    createRandomeNumber();
+    resetInputValue();
+    createRandomNumber();
+    console.log(hiddenNumber);
 }
 
 // Event Listeners
